@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Expo Moser XI°</title>
+<meta name="theme-color" content="#102b52">
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#102b52}
+.hero{background:linear-gradient(145deg,#102b52,#1d4779);color:white;padding:42px 20px 34px;text-align:center}
+.hero h1{font-size:42px;letter-spacing:1px;margin:0 0 18px;font-weight:800}
+.logo{display:inline-flex;border:2px solid rgba(255,255,255,.8);padding:10px 22px;border-radius:8px;font-weight:800;letter-spacing:3px}
+.container{max-width:1050px;margin:auto;padding:22px 16px 50px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.card{background:white;border:0;border-radius:16px;padding:24px 10px;text-align:center;box-shadow:0 5px 18px rgba(16,43,82,.08);cursor:pointer;font-weight:800;color:#102b52}
+.icon{font-size:32px;display:block;margin-bottom:9px}
+.section{margin-top:30px} h2{font-size:22px;margin:0 0 14px}
+.event{background:white;border-radius:16px;padding:18px;margin-bottom:10px;box-shadow:0 5px 18px rgba(16,43,82,.06)}
+.event b{display:block;margin-bottom:5px}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.action{background:#102b52;color:white;border-radius:14px;padding:18px;text-align:center;font-weight:700}
+.search{width:100%;padding:14px;border:1px solid #d8dde5;border-radius:12px;font-size:16px;margin-bottom:14px}
+.exhibitor{background:white;border-radius:14px;padding:16px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.badge{font-size:12px;background:#f0f2f5;padding:6px 9px;border-radius:20px}
+#list{display:none}
+@media(max-width:750px){.grid{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.hero h1{font-size:32px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>EXPO MOSER XI°</h1>
+  <div class="logo">MOSER</div>
+</header>
+<main class="container">
+  <section class="grid">
+    <div class="card" onclick="filterCat('Vino')"><span class="icon">🍷</span>VINO</div>
+    <div class="card" onclick="filterCat('Birra')"><span class="icon">🍺</span>BIRRA</div>
+    <div class="card" onclick="filterCat('Spirits')"><span class="icon">🥃</span>SPIRITS</div>
+    <div class="card" onclick="filterCat('Distillati')"><span class="icon">🍸</span>DISTILLATI</div>
+    <div class="card" onclick="filterCat('Extra')"><span class="icon">✨</span>EXTRA</div>
+  </section>
+
+  <section class="section">
+    <h2>📅 Masterclass disponibili</h2>
+    <div class="event"><b>Le masterclass saranno pubblicate qui</b><span>Orari, relatore, azienda e sala verranno aggiunti quando disponibili.</span></div>
+  </section>
+
+  <section class="section">
+    <div class="actions">
+      <div class="action">🗺️ MAPPA EXPO<br><small>In attesa della mappa definitiva</small></div>
+      <div class="action" onclick="showAll()">🏢 ESPOSITORI<br><small>56 espositori</small></div>
+      <div class="action">📷 QR STAND<br><small>Da attivare con la mappa</small></div>
+    </div>
+  </section>
+
+  <section class="section" id="list">
+    <h2 id="listTitle">Espositori</h2>
+    <input class="search" id="search" placeholder="Cerca espositore..." oninput="render()">
+    <div id="exhibitors"></div>
+  </section>
+</main>
+<script>
+const exhibitors = [
+  {
+    "name": "BELLIA",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "BORTOLOMIOL",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "BOSCO DEL MERLO / PALADIN / VESCINE",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "CASE PAOLIN",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "CORTACCIA",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "FORADORI",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "FRANCA CONTEA",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "GEMIN",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "GILDO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "LA VIS",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "MARRONE",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "MAS DEI CHINI",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "MEZZA CORONA / FEUDO ARANCIO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "MICHELI - VEVEY - PIZZULIN",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "MONTE DEL FRA'",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "MONTE SCHIAVO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "MONTECI",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "PERLAGE",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "POLENCIC",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "ROMANDIOLA / DUE TIGLI",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "SCOLARIS",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "SERENA / DE VILMONT",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "TENUTA VALVERDE",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "TERRE D'ALPAGO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "VIGNETO VECIO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "ANDRIAN / LEGRAS HAAS",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "GIRLAN",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "ABBAZIA NOVACELLA",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "COLLALTO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "NEW CARLOTTO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "PIAN DELLE VETTE",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "LE MONDE / LA PONCA",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "ANGELO NEGRO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "MOSER",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "NEW ANTINORI",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "VENEGAZZU'",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "GATTI / VIETTI / PLANETA / BAROLLO / COL D'ORCIA / REMY MASSIN",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "ZYME'",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "NEW CRUCOLO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "NEW FONGARO",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "ARGENTIERA",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "MANINCOR",
+    "category": "Vino",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "DISTILLERIA BONAVENTURA MASCHIO",
+    "category": "Distillati",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "DISTILLERIA DE NEGRI",
+    "category": "Distillati",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "ABINBEV",
+    "category": "Birra",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "ALES & CO",
+    "category": "Birra",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "FABBRICA IN PEDAVENA",
+    "category": "Birra",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "LZO",
+    "category": "Birra",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "PAULANER",
+    "category": "Birra",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "NEW VINUCI",
+    "category": "Spirits",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "NEW DOLOMITICO",
+    "category": "Spirits",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "NEW FREELY",
+    "category": "Spirits",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "NEW TEKBAR",
+    "category": "Spirits",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "DAMA CAFFE'",
+    "category": "Extra",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "PREGIS",
+    "category": "Extra",
+    "stand": "",
+    "products": []
+  },
+  {
+    "name": "BEDUSCHI",
+    "category": "Extra",
+    "stand": "",
+    "products": []
+  }
+];
+let current = "Tutti";
+function filterCat(cat){current=cat; document.getElementById('list').style.display='block'; document.getElementById('listTitle').textContent=cat.toUpperCase(); render(); document.getElementById('list').scrollIntoView({behavior:'smooth'})}
+function showAll(){current='Tutti';document.getElementById('list').style.display='block';document.getElementById('listTitle').textContent='TUTTI GLI ESPOSITORI';render();document.getElementById('list').scrollIntoView({behavior:'smooth'})}
+function render(){
+ const q=document.getElementById('search').value.toLowerCase();
+ const arr=exhibitors.filter(e=>(current==='Tutti'||e.category===current)&&e.name.toLowerCase().includes(q));
+ document.getElementById('exhibitors').innerHTML=arr.map(e=>`<div class="exhibitor"><b>${e.name}</b><span class="badge">${e.category}</span></div>`).join('');
+}
+</script>
+</body>
+</html>
