@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Expo Moser XI°</title>
+<meta name="theme-color" content="#123c91">
+<style>
+:root{--blue:#123c91;--gold:#d7a51b;--ink:#17346f;--paper:#fbfaf7;--line:#dbe1ee}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.hero{position:relative;overflow:hidden;background:#fff;padding:42px 18px 34px;text-align:center;border-bottom:1px solid var(--line)}
+.hero:before{content:"";position:absolute;inset:-60px -80px auto;height:330px;border:12px solid rgba(18,60,145,.12);border-radius:50%;transform:rotate(-7deg);pointer-events:none}
+.kicker{font-family:cursive;font-size:44px;line-height:.9;color:var(--blue);margin-bottom:2px}
+.title{font-family:Georgia,serif;font-size:58px;letter-spacing:5px;font-weight:500;color:var(--blue);margin:0}
+.edition{font-family:Georgia,serif;letter-spacing:4px;margin-top:12px;color:var(--blue)}
+.date{font-family:Georgia,serif;font-size:30px;color:var(--blue);margin-top:18px}
+.location{font-weight:800;margin-top:10px;letter-spacing:1px}
+.logo{display:inline-block;margin-top:18px;border:2px solid var(--blue);padding:8px 20px;border-radius:50%;font-weight:800;letter-spacing:4px;color:var(--blue)}
+.container{max-width:1100px;margin:auto;padding:24px 16px 60px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 10px;text-align:center;box-shadow:0 6px 18px rgba(18,60,145,.07);cursor:pointer;color:var(--ink);font-weight:800}
+.icon{font-size:32px;display:block;margin-bottom:8px}
+.section{margin-top:32px} h2{font-family:Georgia,serif;font-size:25px;margin:0 0 14px;color:var(--blue)}
+.event{background:#fff;border-left:5px solid var(--gold);border-radius:14px;padding:18px;margin-bottom:10px;box-shadow:0 5px 18px rgba(18,60,145,.06)}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.action{background:var(--blue);color:#fff;border-radius:14px;padding:18px;text-align:center;font-weight:700}
+.search{width:100%;padding:14px;border:1px solid var(--line);border-radius:12px;font-size:16px;margin-bottom:14px;background:#fff}
+.list-section{display:none}
+.category-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.count{font-size:12px;background:#eef2fa;padding:7px 10px;border-radius:20px}
+.exhibitor{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 16px 14px;margin:9px 0;display:block;cursor:pointer;box-shadow:0 4px 12px rgba(18,60,145,.04)}
+.exhibitor:hover{border-color:var(--blue)}
+.exhibitor-name{font-family:Georgia,serif;font-size:19px;font-weight:700;padding-top:3px}
+.badge{display:inline-block;background:var(--gold);color:#fff;font-size:10px;font-weight:800;letter-spacing:1.2px;padding:4px 8px;border-radius:10px;margin-bottom:6px}
+.meta{font-size:12px;color:#6b7484;margin-top:6px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.title{font-size:43px}.date{font-size:24px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="kicker">Expo</div>
+  <h1 class="title">MOSER</h1>
+  <div class="edition">— XI° EDIZIONE —</div>
+  <div class="date">5 OTTOBRE 2026</div>
+  <div class="location">SEDICO (BL)</div>
+  <div class="logo">MOSER</div>
+</header>
+
+<main class="container">
+<section class="grid">
+  <div class="card" onclick="filterCat('Vino')"><span class="icon">🍷</span>VINO</div>
+  <div class="card" onclick="filterCat('Birra')"><span class="icon">🍺</span>BIRRA</div>
+  <div class="card" onclick="filterCat('Spirits')"><span class="icon">🥃</span>SPIRITS</div>
+  <div class="card" onclick="filterCat('Distillati')"><span class="icon">🍸</span>DISTILLATI</div>
+  <div class="card" onclick="filterCat('Extra')"><span class="icon">✨</span>EXTRA</div>
+</section>
+
+<section class="section">
+  <h2>📅 Masterclass disponibili</h2>
+  <div class="event"><b>Le masterclass saranno pubblicate qui</b><span>Orari, relatore, azienda e sala verranno aggiunti quando disponibili.</span></div>
+</section>
+
+<section class="section">
+  <div class="actions">
+    <div class="action">🗺️ MAPPA EXPO<br><small>In attesa della mappa definitiva</small></div>
+    <div class="action" onclick="showAll()">🏢 ESPOSITORI<br><small>56 espositori</small></div>
+    <div class="action">📷 QR STAND<br><small>Da attivare con la mappa</small></div>
+  </div>
+</section>
+
+<section class="section list-section" id="list">
+  <div class="category-title">
+    <h2 id="listTitle">Espositori</h2>
+    <span class="count" id="count"></span>
+  </div>
+  <input class="search" id="search" placeholder="Cerca espositore..." oninput="render()">
+  <div id="exhibitors"></div>
+</section>
+</main>
+
+<script>
+const exhibitors = [{"name": "ABBAZIA NOVACELLA", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "ANDRIAN / LEGRAS HAAS", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "ANGELO NEGRO", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "ANTINORI", "category": "Vino", "new": true, "stand": "", "products": []}, {"name": "ARGENTIERA", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "BELLIA", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "BORTOLOMIOL", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "BOSCO DEL MERLO / PALADIN / VESCINE", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "CARLOTTO", "category": "Vino", "new": true, "stand": "", "products": []}, {"name": "CASE PAOLIN", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "COLLALTO", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "CORTACCIA", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "CRUCOLO", "category": "Vino", "new": true, "stand": "", "products": []}, {"name": "FONGARO", "category": "Vino", "new": true, "stand": "", "products": []}, {"name": "FORADORI", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "FRANCA CONTEA", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "GATTI / VIETTI / PLANETA / BAROLLO / COL D'ORCIA / REMY MASSIN", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "GEMIN", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "GILDO", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "GIRLAN", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "LA VIS", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "LE MONDE / LA PONCA", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "MANINCOR", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "MARRONE", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "MAS DEI CHINI", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "MEZZA CORONA / FEUDO ARANCIO", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "MICHELI - VEVEY - PIZZULIN", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "MONTE DEL FRA'", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "MONTE SCHIAVO", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "MONTECI", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "MOSER", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "PERLAGE", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "PIAN DELLE VETTE", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "POLENCIC", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "ROMANDIOLA / DUE TIGLI", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "SCOLARIS", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "SERENA / DE VILMONT", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "TENUTA VALVERDE", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "TERRE D'ALPAGO", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "VENEGAZZU'", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "VIGNETO VECIO", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "ZYME'", "category": "Vino", "new": false, "stand": "", "products": []}, {"name": "AB INBEV", "category": "Birra", "new": false, "stand": "", "products": []}, {"name": "ALES & CO", "category": "Birra", "new": false, "stand": "", "products": []}, {"name": "FABBRICA IN PEDAVENA", "category": "Birra", "new": false, "stand": "", "products": []}, {"name": "LZO", "category": "Birra", "new": false, "stand": "", "products": []}, {"name": "PAULANER", "category": "Birra", "new": false, "stand": "", "products": []}, {"name": "DOLOMITICO", "category": "Spirits", "new": true, "stand": "", "products": []}, {"name": "FREELY", "category": "Spirits", "new": true, "stand": "", "products": []}, {"name": "TEKBAR", "category": "Spirits", "new": true, "stand": "", "products": []}, {"name": "VINUCI", "category": "Spirits", "new": true, "stand": "", "products": []}, {"name": "DISTILLERIA BONAVENTURA MASCHIO", "category": "Distillati", "new": false, "stand": "", "products": []}, {"name": "DISTILLERIA DE NEGRI", "category": "Distillati", "new": false, "stand": "", "products": []}, {"name": "BEDUSCHI", "category": "Extra", "new": false, "stand": "", "products": []}, {"name": "DAMA CAFFE'", "category": "Extra", "new": false, "stand": "", "products": []}, {"name": "PREGIS", "category": "Extra", "new": false, "stand": "", "products": []}];
+let current = "Tutti";
+
+function filterCat(cat){
+  current=cat;
+  document.getElementById('list').style.display='block';
+  document.getElementById('listTitle').textContent=cat.toUpperCase();
+  render();
+  document.getElementById('list').scrollIntoView({behavior:'smooth'});
+}
+function showAll(){
+  current='Tutti';
+  document.getElementById('list').style.display='block';
+  document.getElementById('listTitle').textContent='TUTTI GLI ESPOSITORI';
+  render();
+  document.getElementById('list').scrollIntoView({behavior:'smooth'});
+}
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const arr=exhibitors.filter(e=>(current==='Tutti'||e.category===current)&&e.name.toLowerCase().includes(q));
+  document.getElementById('count').textContent=arr.length + ' espositori';
+  document.getElementById('exhibitors').innerHTML=arr.map(e=>`
+    <div class="exhibitor">
+      ${e.new ? '<span class="badge">NUOVO</span>' : ''}
+      <div class="exhibitor-name">${e.name}</div>
+      <div class="meta">${e.category} · stand da aggiungere</div>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>
